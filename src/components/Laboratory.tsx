@@ -103,7 +103,10 @@ export default function Laboratory() {
         try {
             const response = await fetch("/api/v1/pdf", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer re_live_demo_key_123"
+                },
                 body: JSON.stringify({ html }),
             });
 
