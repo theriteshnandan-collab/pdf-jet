@@ -105,8 +105,10 @@ export default function Laboratory() {
                     <textarea
                         value={html}
                         onChange={(e) => setHtml(e.target.value)}
-                        className="flex-1 w-full bg-input p-6 text-sm outline-none resize-none font-mono text-foreground focus:ring-1 focus:ring-primary/20 leading-relaxed"
+                        className="flex-1 w-full bg-[#0a0a0a] text-white p-6 text-sm outline-none resize-none font-mono focus:ring-1 focus:ring-primary/20 leading-relaxed custom-scrollbar"
                         spellCheck={false}
+                        autoComplete="off"
+                        autoCorrect="off"
                     />
                 </div>
 
