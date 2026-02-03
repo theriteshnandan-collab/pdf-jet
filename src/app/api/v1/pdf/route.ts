@@ -107,7 +107,11 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         console.error("PDF Generation Failed:", error);
         return NextResponse.json(
-            { error: "Internal Server Error", message: error instanceof Error ? error.message : "Unknown error" },
+            {
+                error: "Internal Server Error",
+                message: error instanceof Error ? error.message : "Unknown error",
+                stack: error instanceof Error ? error.stack : undefined
+            },
             { status: 500 }
         );
     }
