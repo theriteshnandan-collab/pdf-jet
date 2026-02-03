@@ -48,7 +48,16 @@ async function getBrowser() {
 
 export async function POST(req: NextRequest) {
     try {
-        // 2. Parse Body
+        // 2.A Security Check (Replaces Middleware)
+        const authHeader = req.headers.get("authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer re_")) {
+            return NextResponse.json(
+                { error: "Unauthorized", message: "Missing or invalid API Key. Please visit the Vault." },
+                { status: 401 }
+            );
+        }
+
+        // 2.B Parse Body
         const body = await req.json();
         const result = PdfRequestSchema.safeParse(body);
 
