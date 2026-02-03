@@ -25,8 +25,8 @@ async function getBrowser() {
         const chromium = await import("@sparticuz/chromium-min").then(mod => mod.default) as any;
         const puppet = await import("puppeteer-core").then(mod => mod.default);
 
-        // Required for Vercel (Localfonts)
-        await chromium.font("https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf");
+        // Required for Vercel (Localfonts) - DISABLED FOR NOW (API Mismatch)
+        // await chromium.font("https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf");
 
         return puppet.launch({
             args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
