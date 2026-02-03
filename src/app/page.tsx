@@ -22,7 +22,56 @@ export default function Home() {
           "Authorization": "Bearer re_live_demo_key_123"
         },
         body: JSON.stringify({
-          html: "<h1>Hello from PDF-Jet</h1><p>This is a test document.</p>",
+          html: `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    :root { --primary: #FF4F00; --text: #1a1a1a; --border: #e2e8f0; }
+    body { font-family: sans-serif; padding: 60px; color: var(--text); line-height: 1.5; margin: 0; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 60px; }
+    .logo { background: var(--primary); color: white; padding: 10px 20px; font-weight: 900; letter-spacing: -0.05em; font-size: 24px; }
+    .invoice-details { text-align: right; }
+    .label { text-transform: uppercase; font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 0.1em; margin-bottom: 4px; }
+    .value { font-weight: 700; font-size: 14px; }
+    .bill-grid { display: grid; grid-template-cols: 1fr 1fr; gap: 40px; margin-bottom: 60px; }
+    .bill-to h3 { margin: 0 0 10px 0; font-size: 16px; font-weight: 800; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 60px; }
+    th { text-align: left; padding: 12px 0; border-bottom: 2px solid var(--text); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; }
+    td { padding: 20px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .total-section { display: flex; justify-content: flex-end; }
+    .total-box { background: #f8fafc; padding: 30px; width: 250px; }
+    .total-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .grand-total { border-top: 2px solid var(--text); margin-top: 15px; padding-top: 15px; font-weight: 900; font-size: 20px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">PDF-JET</div>
+    <div class="invoice-details">
+      <div class="label">Invoice No</div>
+      <div class="value">#JET-2024-001</div>
+    </div>
+  </div>
+  <div class="bill-grid">
+    <div class="bill-to">
+      <div class="label">Bill To</div>
+      <h3>ACME CORP</h3>
+      <p style="font-size: 12px; color: #475569; margin: 0;">123 Station St.</p>
+    </div>
+  </div>
+  <table>
+    <thead><tr><th>Item</th><th style="text-align: right;">Total</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Engine Optimization</strong></td><td style="text-align: right;">$1,499.00</td></tr>
+    </tbody>
+  </table>
+  <div class="total-section">
+    <div class="total-box">
+      <div class="total-row grand-total"><span>TOTAL</span><span>$1,499.00</span></div>
+    </div>
+  </div>
+</body>
+</html>`,
           options: { format: "A4" }
         })
       });
