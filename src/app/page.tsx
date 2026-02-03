@@ -105,7 +105,7 @@ export default function Home() {
       <aside className="w-64 border-r border-[var(--border)] p-4 flex flex-col shrink-0">
         <div className="mb-8 pl-2">
           <h1 className="text-xl font-bold tracking-tight text-white">PDF-JET</h1>
-          <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">v1.2.0 / PROD</p>
+          <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">v1.2.1 / PROD</p>
         </div>
 
         <nav className="space-y-1 flex-1">
