@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+
+  /* Swiss Industrial Palette */
+  --border: #333333;
+  --input: #1a1a1a;
+  --ring: #FF4F00;
+
+  --primary: #FF4F00;
+  /* International Orange */
+  --primary-foreground: #000000;
+
+  --secondary: #ffffff;
+  --secondary-foreground: #000000;
+
+  --muted: #1a1a1a;
+  --muted-foreground: #a1a1aa;
+
+  --success: #00E054;
+  /* Signal Green */
+  --error: #FF3333;
+  /* Warm Red */
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-geist-mono), monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer utilities {
+  .border-industrial {
+    @apply border border-[var(--border)];
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
