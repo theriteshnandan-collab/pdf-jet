@@ -65,6 +65,17 @@ export default function LoginPage() {
                         <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-2 font-bold">Secure Access Terminal</p>
                     </header>
 
+                    <style jsx global>{`
+                        input:-webkit-autofill,
+                        input:-webkit-autofill:hover, 
+                        input:-webkit-autofill:focus, 
+                        input:-webkit-autofill:active {
+                            -webkit-box-shadow: 0 0 0 30px black inset !important;
+                            -webkit-text-fill-color: white !important;
+                            caret-color: white !important;
+                        }
+                    `}</style>
+
                     <form onSubmit={handleAuth} className="space-y-4">
                         <div className="space-y-1">
                             <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest pl-1">Email_Address</label>
