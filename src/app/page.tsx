@@ -27,7 +27,11 @@ export default function Home() {
         })
       });
 
-      if (!response.ok) throw new Error("Deployment Failed");
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Server Error Details:", errorData);
+        throw new Error(errorData.message || "Deployment Failed");
+      }
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -40,7 +44,7 @@ export default function Home() {
 
     } catch (error) {
       console.error(error);
-      alert("Deployment Failed: Check Console");
+      alert(`Deployment Failed: ${error instanceof Error ? error.message : "Check Console"}`);
     } finally {
       setIsDeploying(false);
     }
