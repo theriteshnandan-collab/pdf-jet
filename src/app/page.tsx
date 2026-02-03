@@ -1,101 +1,162 @@
-import Image from "next/image";
+"use client";
+
+import { Terminal, FileText, Settings, Shield, Loader2 } from "lucide-react";
+import { useState } from "react";
+import Laboratory from "@/components/Laboratory";
+import Vault from "@/components/Vault";
+import TelemetryDeck from "@/components/TelemetryDeck";
+
+type View = "hangar" | "laboratory" | "valuables" | "settings";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [activeView, setActiveView] = useState<View>("hangar");
+  const [isDeploying, setIsDeploying] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleDeploy = async () => {
+    setIsDeploying(true);
+    try {
+      const response = await fetch("/api/v1/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          html: "<h1>Hello from PDF-Jet</h1><p>This is a test document.</p>",
+          options: { format: "A4" }
+        })
+      });
+
+      if (!response.ok) throw new Error("Deployment Failed");
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "test-document.pdf";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error(error);
+      alert("Deployment Failed: Check Console");
+    } finally {
+      setIsDeploying(false);
+    }
+  };
+
+  return (
+    <div className="flex h-screen w-full bg-background text-foreground font-mono overflow-hidden">
+      {/* Sidebar */}
+      <aside className="w-64 border-r border-[var(--border)] p-4 flex flex-col shrink-0">
+        <div className="mb-8 pl-2">
+          <h1 className="text-xl font-bold tracking-tight text-white">PDF-JET</h1>
+          <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">v1.2.0 / PROD</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        <nav className="space-y-1 flex-1">
+          <NavItem
+            icon={<FileText size={16} />}
+            label="Hangar"
+            active={activeView === "hangar"}
+            onClick={() => setActiveView("hangar")}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          <NavItem
+            icon={<Terminal size={16} />}
+            label="Laboratory"
+            active={activeView === "laboratory"}
+            onClick={() => setActiveView("laboratory")}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+          <NavItem
+            icon={<Shield size={16} />}
+            label="Vault"
+            active={activeView === "valuables"}
+            onClick={() => setActiveView("valuables")}
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <NavItem
+            icon={<Settings size={16} />}
+            label="Settings"
+            active={activeView === "settings"}
+            onClick={() => setActiveView("settings")}
+          />
+        </nav>
+
+        <div className="p-4 border border-[var(--border)] mt-auto">
+          <div className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">Signal</div>
+          <div className="flex items-center gap-2 mt-2">
+            <div className="w-2.5 h-2.5 bg-success rounded-full animate-pulse" />
+            <span className="text-xs font-bold tracking-widest">OPERATIONAL</span>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      {activeView === "hangar" && (
+        <main className="flex-1 p-8 overflow-auto">
+          <header className="flex justify-between items-center mb-8 border-b border-[var(--border)] pb-4">
+            <div className="flex items-center gap-4">
+              <h2 className="text-2xl font-bold uppercase tracking-tight">The Hangar</h2>
+              <span className="text-[10px] border border-[var(--border)] px-2 py-0.5 text-muted-foreground">ACTIVE_FLEET</span>
+            </div>
+            <button
+              onClick={handleDeploy}
+              disabled={isDeploying}
+              className="bg-primary text-primary-foreground px-4 py-2 text-sm font-bold hover:opacity-90 transition-all disabled:opacity-50 flex items-center gap-2"
+            >
+              {isDeploying ? <Loader2 className="animate-spin" size={16} /> : null}
+              {isDeploying ? "DEPLOYING..." : "DEPLOY DOCUMENT"}
+            </button>
+          </header>
+
+          <TelemetryDeck />
+
+          <div className="border border-[var(--border)]">
+            <div className="grid grid-cols-4 p-3 border-b border-[var(--border)] bg-muted/30 text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">
+              <div>Status</div>
+              <div>ID_CODE</div>
+              <div>Template</div>
+              <div>Timestamp</div>
+            </div>
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="grid grid-cols-4 p-4 border-b border-[var(--border)] hover:bg-muted/50 transition-colors text-xs items-center">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-success rounded-full" />
+                  <span className="font-bold">200_OK</span>
+                </div>
+                <div className="font-mono text-muted-foreground opacity-70">jet_{Math.random().toString(36).substring(7)}</div>
+                <div><span className="px-2 py-1 border border-[var(--border)] text-[10px] font-bold">INVOICE_V1</span></div>
+                <div className="text-muted-foreground tabular-nums">14:02:12</div>
+              </div>
+            ))}
+          </div>
+        </main>
+      )}
+
+      {activeView === "laboratory" && <Laboratory />}
+
+      {activeView === "valuables" && <Vault />}
+
+      {(activeView === "settings") && (
+        <main className="flex-1 p-8 flex items-center justify-center bg-input/20">
+          <div className="text-center">
+            <div className="w-12 h-12 border border-[var(--border)] flex items-center justify-center mx-auto mb-6">
+              <Settings className="text-muted-foreground animate-spin-slow" size={20} />
+            </div>
+            <h2 className="text-lg font-bold mb-2 uppercase tracking-[0.3em]">{activeView}</h2>
+            <p className="text-muted-foreground text-[10px] uppercase tracking-[0.2em]">Restricted Access / Under Construction</p>
+          </div>
+        </main>
+      )}
     </div>
+  );
+}
+
+function NavItem({ icon, label, active = false, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-4 py-3 text-[11px] transition-all uppercase tracking-widest font-bold border-l-2 ${active ? "bg-muted text-primary border-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/30 border-transparent"}`}
+    >
+      <span className={active ? "text-primary" : "text-muted-foreground"}>{icon}</span>
+      <span>{label}</span>
+    </button>
   );
 }
