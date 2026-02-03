@@ -1,7 +1,8 @@
-"use client";
-
-import { Terminal, FileText, Settings, Shield, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FileText, Terminal, Shield, Settings, Loader2 } from "lucide-react";
+import NavItem from "@/components/NavItem";
 import Laboratory from "@/components/Laboratory";
 import Vault from "@/components/Vault";
 import TelemetryDeck from "@/components/TelemetryDeck";
@@ -11,6 +12,23 @@ type View = "hangar" | "laboratory" | "valuables" | "settings";
 export default function Home() {
   const [activeView, setActiveView] = useState<View>("hangar");
   const [isDeploying, setIsDeploying] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const supabase = createClient();
+  const router = useRouter();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, [supabase]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  };
 
   const handleDeploy = async () => {
     setIsDeploying(true);
@@ -135,11 +153,25 @@ export default function Home() {
           />
         </nav>
 
-        <div className="p-4 border border-[var(--border)] mt-auto">
-          <div className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">Signal</div>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="w-2.5 h-2.5 bg-success rounded-full animate-pulse" />
-            <span className="text-xs font-bold tracking-widest">OPERATIONAL</span>
+        <div className="p-4 border border-[var(--border)] mt-auto space-y-4">
+          <div>
+            <div className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">Operator</div>
+            <div className="text-[11px] font-bold truncate mt-1 text-primary">{user?.email || "INITIALIZING..."}</div>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="w-full py-2 text-[10px] border border-[var(--border)] hover:bg-destructive/10 hover:text-destructive transition-colors uppercase tracking-[0.2em] font-bold"
+          >
+            Terminal_Exit
+          </button>
+
+          <div className="pt-4 border-t border-[var(--border)]">
+            <div className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">Signal</div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="w-2.5 h-2.5 bg-success rounded-full animate-pulse" />
+              <span className="text-xs font-bold tracking-widest">OPERATIONAL</span>
+            </div>
           </div>
         </div>
       </aside>
@@ -188,7 +220,7 @@ export default function Home() {
 
       {activeView === "laboratory" && <Laboratory />}
 
-      {activeView === "valuables" && <Vault />}
+      {activeView === "valuables" && <Vault user={user} />}
 
       {(activeView === "settings") && (
         <main className="flex-1 p-8 flex items-center justify-center bg-input/20">

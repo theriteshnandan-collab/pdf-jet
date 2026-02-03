@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Copy, Shield, RefreshCw, Eye, EyeOff, Activity, Lock } from "lucide-react";
 
-export default function Vault() {
+export default function Vault({ user }: { user: any }) {
     const [keys] = useState([
         { id: "key_1", prefix: "re_", secret: "live_89s7f98s7f...", label: "Production Key", created: "2024-02-01" },
         { id: "key_2", prefix: "re_", secret: "test_89s7f98s7f...", label: "Development Key", created: "2024-02-03" },
@@ -21,6 +21,10 @@ export default function Vault() {
                     </span>
                 </div>
                 <div className="flex items-center gap-6 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                        <span className="tracking-widest uppercase">Operator:</span>
+                        <span className="text-primary font-bold">{user?.email || "UNKNOWN"}</span>
+                    </div>
                     <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
                         <span className="tracking-widest uppercase">Encryption: AES-256</span>
