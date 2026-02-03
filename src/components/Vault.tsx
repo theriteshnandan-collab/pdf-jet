@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { Copy, Shield, RefreshCw, Eye, EyeOff, Activity, Lock } from "lucide-react";
+import { User } from "@supabase/supabase-js";
 
-export default function Vault({ user }: { user: any }) {
+export default function Vault({ user }: { user: User | null }) {
     const [keys] = useState([
         { id: "key_1", prefix: "re_", secret: "live_89s7f98s7f...", label: "Production Key", created: "2024-02-01" },
         { id: "key_2", prefix: "re_", secret: "test_89s7f98s7f...", label: "Development Key", created: "2024-02-03" },

@@ -39,8 +39,9 @@ export default function LoginPage() {
                 router.push("/");
                 router.refresh();
             }
-        } catch (err: any) {
-            setError(err.message || "Authentication failed");
+        } catch (err) {
+            const error = err as Error;
+            setError(error.message || "Authentication failed");
         } finally {
             setIsLoading(false);
         }

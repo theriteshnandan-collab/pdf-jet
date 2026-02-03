@@ -1,7 +1,10 @@
+"use client";
+
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FileText, Terminal, Shield, Settings, Loader2 } from "lucide-react";
+import { User } from "@supabase/supabase-js";
 import NavItem from "@/components/NavItem";
 import Laboratory from "@/components/Laboratory";
 import Vault from "@/components/Vault";
@@ -12,7 +15,7 @@ type View = "hangar" | "laboratory" | "valuables" | "settings";
 export default function Home() {
   const [activeView, setActiveView] = useState<View>("hangar");
   const [isDeploying, setIsDeploying] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const supabase = createClient();
   const router = useRouter();
 
@@ -237,14 +240,4 @@ export default function Home() {
   );
 }
 
-function NavItem({ icon, label, active = false, onClick }: { icon: React.ReactNode, label: string, active?: boolean, onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3 text-[11px] transition-all uppercase tracking-widest font-bold border-l-2 ${active ? "bg-muted text-primary border-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted/30 border-transparent"}`}
-    >
-      <span className={active ? "text-primary" : "text-muted-foreground"}>{icon}</span>
-      <span>{label}</span>
-    </button>
-  );
-}
+
