@@ -5,11 +5,11 @@ import { Copy, Shield, RefreshCw, Eye, EyeOff, Activity, Lock } from "lucide-rea
 import { User } from "@supabase/supabase-js";
 
 export default function Vault({ user }: { user: User | null }) {
-    const [keys] = useState([
-        { id: "key_1", prefix: "re_", secret: "live_89s7f98s7f...", label: "Production Key", created: "2024-02-01" },
-        { id: "key_2", prefix: "re_", secret: "test_89s7f98s7f...", label: "Development Key", created: "2024-02-03" },
-    ]);
+    // For now, keys are handled locally or via an upcoming 'keys' table.
+    // We will show 0 keys and a prompt to create one.
+    const [keys, setKeys] = useState<any[]>([]);
     const [isVisible, setIsVisible] = useState(false);
+    const [usage, setUsage] = useState(0);
 
     return (
         <div className="flex-1 flex flex-col h-full bg-background overflow-hidden font-mono">
@@ -37,30 +37,30 @@ export default function Vault({ user }: { user: User | null }) {
 
                 {/* Metric Cards */}
                 <div className="grid grid-cols-3 gap-4 mb-8">
-                    <div className="border border-[var(--border)] p-4 relative group hover:border-primary transition-colors">
+                    <div className="border border-[var(--border)] p-4 relative group hover:border-primary transition-colors bg-black/20">
                         <div className="absolute top-2 right-2 opacity-20 group-hover:opacity-100 transition-opacity text-primary"><Activity size={16} /></div>
                         <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Total Requests</div>
-                        <div className="text-2xl font-bold">14,203</div>
-                        <div className="text-[10px] text-success mt-1 flex items-center gap-1">▲ 12% vs last week</div>
+                        <div className="text-2xl font-bold">0</div>
+                        <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1 italic">Awaiting API traffic...</div>
                     </div>
-                    <div className="border border-[var(--border)] p-4 relative group hover:border-primary transition-colors">
+                    <div className="border border-[var(--border)] p-4 relative group hover:border-primary transition-colors bg-black/20">
                         <div className="absolute top-2 right-2 opacity-20 group-hover:opacity-100 transition-opacity text-primary"><Shield size={16} /></div>
                         <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Active Keys</div>
-                        <div className="text-2xl font-bold">02</div>
-                        <div className="text-[10px] text-muted-foreground mt-1">100% Valid</div>
+                        <div className="text-2xl font-bold">00</div>
+                        <div className="text-[10px] text-muted-foreground mt-1">No Keys Provisioned</div>
                     </div>
-                    <div className="border border-[var(--border)] p-4 relative group hover:border-primary transition-colors">
-                        <div className="absolute top-2 right-2 opacity-20 group-hover:opacity-100 transition-opacity text-error"><Lock size={16} /></div>
-                        <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Failed Auth</div>
-                        <div className="text-2xl font-bold text-error">0</div>
-                        <div className="text-[10px] text-muted-foreground mt-1">Zero Intrusion</div>
+                    <div className="border border-[var(--border)] p-4 relative group hover:border-primary transition-colors bg-black/20">
+                        <div className="absolute top-2 right-2 opacity-20 group-hover:opacity-100 transition-opacity text-success"><Lock size={16} /></div>
+                        <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Security Status</div>
+                        <div className="text-2xl font-bold text-success font-bold uppercase text-sm">Optimal</div>
+                        <div className="text-[10px] text-muted-foreground mt-1 text-success">All Protocols Active</div>
                     </div>
                 </div>
 
                 {/* API Keys Table */}
-                <div className="border border-[var(--border)] mb-8">
+                <div className="border border-[var(--border)] mb-8 bg-black/10">
                     <div className="h-10 bg-muted/30 border-b border-[var(--border)] flex items-center px-4 justify-between">
-                        <h3 className="text-xs uppercase tracking-widest font-bold">Access Credentials</h3>
+                        <h3 className="text-xs uppercase tracking-widest font-bold text-white/50">Access Credentials</h3>
                         <button className="text-[10px] bg-primary text-black px-3 py-1 font-bold uppercase hover:opacity-90 transition-opacity flex items-center gap-2">
                             <RefreshCw size={10} />
                             Roll New Key
@@ -74,41 +74,54 @@ export default function Vault({ user }: { user: User | null }) {
                         <div>Action</div>
                     </div>
 
-                    {keys.map((key) => (
-                        <div key={key.id} className="grid grid-cols-4 p-4 border-b border-[var(--border)] hover:bg-muted/20 transition-colors text-xs items-center group">
-                            <div className="font-bold">{key.label}</div>
-                            <div className="font-mono text-muted-foreground flex items-center gap-2">
-                                <span className="text-primary">{key.prefix}</span>
-                                <span className={isVisible ? "text-foreground" : "blur-sm select-none transition-all"}>
-                                    {isVisible ? key.secret.replace("re_", "") : "•••••••••••••••••••••"}
-                                </span>
-                                <button onClick={() => setIsVisible(!isVisible)} className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-white">
-                                    {isVisible ? <EyeOff size={12} /> : <Eye size={12} />}
-                                </button>
+                    {keys.length > 0 ? (
+                        keys.map((key) => (
+                            <div key={key.id} className="grid grid-cols-4 p-4 border-b border-[var(--border)] hover:bg-muted/20 transition-colors text-xs items-center group">
+                                <div className="font-bold">{key.label}</div>
+                                <div className="font-mono text-muted-foreground flex items-center gap-2">
+                                    <span className="text-primary">{key.prefix}</span>
+                                    <span className={isVisible ? "text-foreground" : "blur-sm select-none transition-all"}>
+                                        {isVisible ? key.secret.replace("re_", "") : "•••••••••••••••••••••"}
+                                    </span>
+                                    <button onClick={() => setIsVisible(!isVisible)} className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-white">
+                                        {isVisible ? <EyeOff size={12} /> : <Eye size={12} />}
+                                    </button>
+                                </div>
+                                <div className="text-muted-foreground tabular-nums">{key.created}</div>
+                                <div className="flex items-center gap-2">
+                                    <button className="border border-[var(--border)] px-2 py-1 text-[10px] uppercase hover:bg-white hover:text-black transition-colors flex items-center gap-1" onClick={() => alert("Copied!")}>
+                                        <Copy size={10} /> Copy
+                                    </button>
+                                    <button className="border border-[var(--border)] px-2 py-1 text-[10px] uppercase hover:bg-error hover:text-white hover:border-error transition-colors text-muted-foreground">
+                                        Revoke
+                                    </button>
+                                </div>
                             </div>
-                            <div className="text-muted-foreground tabular-nums">{key.created}</div>
-                            <div className="flex items-center gap-2">
-                                <button className="border border-[var(--border)] px-2 py-1 text-[10px] uppercase hover:bg-white hover:text-black transition-colors flex items-center gap-1" onClick={() => alert("Copied!")}>
-                                    <Copy size={10} /> Copy
-                                </button>
-                                <button className="border border-[var(--border)] px-2 py-1 text-[10px] uppercase hover:bg-error hover:text-white hover:border-error transition-colors text-muted-foreground">
-                                    Revoke
-                                </button>
-                            </div>
+                        ))
+                    ) : (
+                        <div className="p-16 flex flex-col items-center justify-center text-center opacity-40">
+                            <Shield size={32} className="mb-4 text-muted-foreground" />
+                            <div className="text-[10px] uppercase font-bold tracking-[0.2em]">No Credentials Provisioned</div>
+                            <p className="text-[8px] text-muted-foreground mt-2 max-w-[250px] uppercase tracking-wider">Your API keys will appear here once you roll your first secret.</p>
                         </div>
-                    ))}
+                    )}
                 </div>
 
-                {/* Usage Graph Mock */}
-                <div className="border border-[var(--border)] p-6 flex flex-col items-center justify-center text-center h-64 bg-input/10">
-                    <Activity className="text-muted-foreground mb-4 opacity-20" size={48} />
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Live Telemetry</div>
-                    <div className="text-[10px] text-muted-foreground mt-2 max-w-md">
-                        Real-time request volume visualization requires connecting to a Timeseries Database (ClickHouse/InfluxDB). This is a static representation for the prototype.
+                {/* Usage Graph Mock - Clean Replacement */}
+                <div className="border border-white/5 p-12 flex flex-col items-center justify-center text-center h-48 bg-black/40">
+                    <Activity className="text-muted-foreground mb-4 opacity-10" size={32} />
+                    <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/30">Analytics Engine Offline</div>
+                    <div className="text-[8px] text-muted-foreground mt-1 max-w-sm uppercase tracking-tighter opacity-50">
+                        Traffic visualization is enabled for enterprise accounts with > 10,000 monthly requests.
                     </div>
                 </div>
 
             </div>
         </div>
+    );
+}
+
+            </div >
+        </div >
     );
 }
