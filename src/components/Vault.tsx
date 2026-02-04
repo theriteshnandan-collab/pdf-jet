@@ -86,7 +86,11 @@ export default function Vault({ user }: { user: User | null }) {
                 <div className="border border-[var(--border)] mb-8 bg-black/10">
                     <div className="h-10 bg-muted/30 border-b border-[var(--border)] flex items-center px-4 justify-between">
                         <h3 className="text-xs uppercase tracking-widest font-bold text-white/50">Access Credentials</h3>
-                        <button className="text-[10px] bg-primary text-black px-3 py-1 font-bold uppercase hover:opacity-90 transition-opacity flex items-center gap-2">
+                        <button
+                            onClick={handleRollKey}
+                            disabled={!!freshKey}
+                            className="text-[10px] bg-primary text-black px-3 py-1 font-bold uppercase hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
                             <RefreshCw size={10} />
                             Roll New Key
                         </button>
