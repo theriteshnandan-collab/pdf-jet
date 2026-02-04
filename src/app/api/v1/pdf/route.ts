@@ -3,7 +3,6 @@ import { z } from "zod";
 import puppeteer, { PaperFormat } from "puppeteer";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import puppeteer, { PaperFormat } from "puppeteer";
 
 // 1. Validation Schema (The "Contract")
 const PdfRequestSchema = z.object({
