@@ -140,7 +140,7 @@ export default function Vault({ user }: { user: User | null }) {
                                 </button>
                             </div>
                             <div className="text-[10px] text-muted-foreground">
-                                ⚠️ Copy this now. You won't be able to see it again.
+                                ⚠️ Copy this now. You won&apos;t be able to see it again.
                             </div>
                         </div>
                     )}
