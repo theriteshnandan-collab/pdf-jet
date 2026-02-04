@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Loader2, Save, Play, RefreshCw, Code, Eye } from "lucide-react";
+import { useState } from "react";
+import { Loader2, Save, Code, Eye } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Laboratory() {
