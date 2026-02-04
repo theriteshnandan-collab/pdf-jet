@@ -305,7 +305,7 @@ export default function Home() {
                           },
                         };
 
-                        const Razorpay = (window as unknown as { Razorpay: any }).Razorpay;
+                        const Razorpay = (window as unknown as Record<string, any>).Razorpay;
                         const rzp = new Razorpay(options);
                         rzp.open();
 
