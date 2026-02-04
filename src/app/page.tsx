@@ -305,7 +305,8 @@ export default function Home() {
                           },
                         };
 
-                        const Razorpay = (window as unknown as Record<string, any>).Razorpay;
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        const Razorpay = (window as any).Razorpay;
                         const rzp = new Razorpay(options);
                         rzp.open();
 
