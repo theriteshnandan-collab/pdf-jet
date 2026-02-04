@@ -305,9 +305,10 @@ export default function Home() {
                           },
                         };
 
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        const Razorpay = (window as any).Razorpay;
-                        const rzp = new Razorpay(options);
+                        interface RazorpayWindow extends Window {
+                          Razorpay: any;
+                        }
+                        const rzp = new (window as unknown as RazorpayWindow).Razorpay(options);
                         rzp.open();
 
                       } catch (error) {
