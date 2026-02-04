@@ -10,6 +10,23 @@ export default function Vault({ user }: { user: User | null }) {
     const [keys, setKeys] = useState<{ id: string; label: string; prefix: string; created: string }[]>([]);
     const [freshKey, setFreshKey] = useState<string | null>(null);
 
+    const handleRevoke = async (id: string) => {
+        if (!confirm("Are you sure? This will immediately invalidate the key.")) return;
+        try {
+            const res = await fetch("/api/v1/keys/revoke", {
+                method: "POST",
+                body: JSON.stringify({ keyId: id })
+            });
+            if (res.ok) {
+                setKeys(prev => prev.filter(k => k.id !== id));
+            } else {
+                alert("Failed to revoke key");
+            }
+        } catch {
+            alert("Error revoking key");
+        }
+    };
+
     const handleRollKey = async () => {
         if (!confirm("This will generate a new secret key. You must save it immediately.")) return;
 
@@ -88,7 +105,7 @@ export default function Vault({ user }: { user: User | null }) {
                         <button
                             onClick={handleRollKey}
                             disabled={!!freshKey}
-                            className="text-[10px] bg-primary text-black px-3 py-1 font-bold uppercase hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="text-[10px] bg-primary text-white px-3 py-1 font-bold uppercase hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <RefreshCw size={10} />
                             Roll New Key
@@ -102,6 +119,32 @@ export default function Vault({ user }: { user: User | null }) {
                         <div>Action</div>
                     </div>
 
+                    {freshKey && (
+                        <div className="mb-8 p-4 border border-success/50 bg-success/10 flex flex-col gap-2 rounded-sm">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-success uppercase tracking-widest flex items-center gap-2">
+                                    <Shield size={12} />
+                                    New Key Generated
+                                </span>
+                                <button onClick={() => setFreshKey(null)} className="text-[10px] text-muted-foreground hover:text-white">DISMISS</button>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <code className="bg-black/50 p-2 rounded border border-white/10 font-mono text-xs flex-1 text-white">
+                                    {freshKey}
+                                </code>
+                                <button
+                                    onClick={() => navigator.clipboard.writeText(freshKey)}
+                                    className="bg-success text-black px-3 py-2 text-[10px] font-bold uppercase hover:opacity-90 flex items-center gap-1"
+                                >
+                                    <Copy size={12} /> Copy
+                                </button>
+                            </div>
+                            <div className="text-[10px] text-muted-foreground">
+                                ⚠️ Copy this now. You won't be able to see it again.
+                            </div>
+                        </div>
+                    )}
+
                     {keys.length > 0 ? (
                         keys.map((key) => (
                             <div key={key.id} className="grid grid-cols-4 p-4 border-b border-[var(--border)] hover:bg-muted/20 transition-colors text-xs items-center group">
@@ -114,10 +157,10 @@ export default function Vault({ user }: { user: User | null }) {
                                 </div>
                                 <div className="text-muted-foreground tabular-nums">{key.created}</div>
                                 <div className="flex items-center gap-2">
-                                    <button className="border border-[var(--border)] px-2 py-1 text-[10px] uppercase hover:bg-white hover:text-black transition-colors flex items-center gap-1" onClick={() => alert("Copied!")}>
-                                        <Copy size={10} /> Copy
-                                    </button>
-                                    <button className="border border-[var(--border)] px-2 py-1 text-[10px] uppercase hover:bg-error hover:text-white hover:border-error transition-colors text-muted-foreground">
+                                    <button
+                                        className="border border-[var(--border)] px-2 py-1 text-[10px] uppercase hover:bg-error hover:text-white hover:border-error transition-colors text-muted-foreground"
+                                        onClick={() => handleRevoke(key.id)}
+                                    >
                                         Revoke
                                     </button>
                                 </div>
