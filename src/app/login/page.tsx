@@ -50,10 +50,16 @@ export default function LoginPage() {
     const handleGoogleAuth = async () => {
         setIsLoading(true);
         try {
+            // Priority: Hardcoded URL for Production > window.location.origin
+            const isProduction = window.location.hostname !== "localhost";
+            const origin = isProduction
+                ? "https://pdf-jet-cyan.vercel.app"
+                : window.location.origin;
+
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: "google",
                 options: {
-                    redirectTo: `${window.location.origin}/auth/callback`,
+                    redirectTo: `${origin}/auth/callback`,
                 },
             });
             if (error) throw error;
