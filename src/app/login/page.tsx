@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useState } from "react";
 import { Shield, Loader2, Mail, Lock, Chrome } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
