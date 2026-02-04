@@ -3,6 +3,10 @@ import { createServerClient } from "@supabase/ssr";
 import { updateSession } from '@/lib/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+        console.error("❌ FATAL: SUPABASE_SERVICE_ROLE_KEY is missing in Vercel Environment Variables.");
+        return NextResponse.json({ error: "Server Misconfiguration: Missing Service Role Key" }, { status: 500 });
+    }
     // 1. Filter: Intercept request to PDF API
     if (request.nextUrl.pathname.startsWith('/api/v1/pdf')) {
         const authHeader = request.headers.get('authorization');
