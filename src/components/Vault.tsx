@@ -120,8 +120,3 @@ export default function Vault({ user }: { user: User | null }) {
         </div>
     );
 }
-
-            </div >
-        </div >
-    );
-}
